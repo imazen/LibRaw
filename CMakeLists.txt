@@ -110,12 +110,6 @@ INCLUDE(MacroBoolTo01)
 INCLUDE(MacroLogFeature)
 INCLUDE(MacroOptionalFindPackage)
 
-# Math library check
-
-IF(NOT WIN32)
-    FIND_LIBRARY(MATH_LIBRARY m)
-ENDIF()
-
 # LCMS version 1 and 2 library check
 
 SET(LCMS_SUPPORT_CAN_BE_COMPILED false)
@@ -473,8 +467,6 @@ ENDFOREACH(_curentfile ${libraw_LIB_SRCS})
 ADD_LIBRARY(raw SHARED ${libraw_LIB_SRCS})
 ADD_LIBRARY(raw_static STATIC ${libraw_LIB_SRCS})
 
-TARGET_LINK_LIBRARIES(raw ${MATH_LIBRARY})
-
 IF(MINGW)
     TARGET_LINK_LIBRARIES(raw ws2_32)
 ENDIF()
@@ -516,8 +508,6 @@ FOREACH(_curentfile ${libraw_r_LIB_SRCS})
 ENDFOREACH(_curentfile ${libraw_r_LIB_SRCS})
 
 ADD_LIBRARY(raw_r SHARED ${libraw_r_LIB_SRCS})
-
-TARGET_LINK_LIBRARIES(raw_r ${MATH_LIBRARY})
 
 IF(MINGW)
     TARGET_LINK_LIBRARIES(raw_r ws2_32)
