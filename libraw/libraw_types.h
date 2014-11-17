@@ -73,8 +73,10 @@ extern "C" {
 typedef __int64 INT64;
 typedef unsigned __int64 UINT64;
 #else
-typedef long long INT64;
-typedef unsigned long long UINT64;
+// define portable types for 32-bit / 64-bit OS
+#include <inttypes.h>
+typedef int64_t INT64;
+typedef uint64_t UINT64;
 #endif
 
 typedef unsigned char uchar;
