@@ -64,9 +64,9 @@ MESSAGE(STATUS "LibRaw SO version:     ${RAW_LIB_SO_VERSION_STRING}")
 # ==================================================================================================
 # Project Options
 
-OPTION(ENABLE_OPENMP               "Build library with OpenMP support               (default=ON)"                 ON)
-OPTION(ENABLE_LCMS                 "Build library with LCMS support                 (default=ON)"                 ON)
-OPTION(ENABLE_EXAMPLES             "Build library with sample command-line programs (default=ON)"                 ON)
+OPTION(ENABLE_OPENMP               "Build library with OpenMP support               (default=OFF)"                OFF)
+OPTION(ENABLE_LCMS                 "Build library with LCMS support                 (default=OFF)"                OFF)
+OPTION(ENABLE_EXAMPLES             "Build library with sample command-line programs (default=OFF)"                OFF)
 OPTION(ENABLE_RAWSPEED             "Build library with extra RawSpeed codec support (default=OFF)"                OFF)
 OPTION(ENABLE_DEMOSAIC_PACK_GPL2   "Build library with extra Demosaic pack GPL2     (default=OFF)"                OFF)
 OPTION(ENABLE_DEMOSAIC_PACK_GPL3   "Build library with extra Demosaic pack GPL3     (default=OFF)"                OFF)
