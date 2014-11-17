@@ -68,6 +68,7 @@ OPTION(ENABLE_OPENMP               "Build library with OpenMP support           
 OPTION(ENABLE_LCMS                 "Build library with LCMS support                 (default=OFF)"                OFF)
 OPTION(ENABLE_EXAMPLES             "Build library with sample command-line programs (default=OFF)"                OFF)
 OPTION(ENABLE_RAWSPEED             "Build library with extra RawSpeed codec support (default=OFF)"                OFF)
+OPTION(ENABLE_REDCINE              "Build library with extra RedCine codec support  (default=OFF)"                OFF)
 OPTION(ENABLE_DEMOSAIC_PACK_GPL2   "Build library with extra Demosaic pack GPL2     (default=OFF)"                OFF)
 OPTION(ENABLE_DEMOSAIC_PACK_GPL3   "Build library with extra Demosaic pack GPL3     (default=OFF)"                OFF)
 OPTION(ENABLE_DCRAW_DEBUG          "Build library with debug message from dcraw     (default=OFF)"                OFF)
@@ -203,7 +204,9 @@ MACRO_BOOL_TO_01(OPENMP_FOUND LIBRAW_USE_OPENMP)
 
 # Jasper library check
 
-FIND_PACKAGE(Jasper)
+IF(ENABLE_REDCINE)
+  FIND_PACKAGE(Jasper)
+ENDIF()
 
 # Flag to use libjasper with LibRaw RedCine codec
 IF(JASPER_FOUND)
