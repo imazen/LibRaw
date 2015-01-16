@@ -65,6 +65,7 @@ MESSAGE(STATUS "LibRaw SO version:     ${RAW_LIB_SO_VERSION_STRING}")
 # Project Options
 
 OPTION(ENABLE_OPENMP               "Build library with OpenMP support               (default=OFF)"                OFF)
+OPTION(ENABLE_DNG                  "Build library with DNG lossy support            (default=OFF)"                OFF)
 OPTION(ENABLE_LCMS                 "Build library with LCMS support                 (default=OFF)"                OFF)
 OPTION(ENABLE_EXAMPLES             "Build library with sample command-line programs (default=OFF)"                OFF)
 OPTION(ENABLE_RAWSPEED             "Build library with extra RawSpeed codec support (default=OFF)"                OFF)
@@ -144,33 +145,35 @@ ENDIF()
 # For registration to libraw_config.h
 MACRO_BOOL_TO_01(LCMS_SUPPORT_CAN_BE_COMPILED LIBRAW_USE_LCMS)
 
-# JPEG library check
 
-FIND_PACKAGE(JPEG)
-IF(JPEG_FOUND)
-    # check version of libjpeg
-    # inspired from digikam/CMakeLists.txt
-    SET(_jpeglib_version_source "#include <stddef.h>\n#include<stdio.h>\n#include <jpeglib.h>\n int main()\n {\n #if (JPEG_LIB_VERSION >= 80) \n #error JPEG_LIB_VERSION >= 80 found \n #endif \n }\n")
-    SET(_jpeglib_version_source_file ${CMAKE_BINARY_DIR}/CMakeTmp/cmake_jpeglib_version_check.cpp)
-    FILE(WRITE "${_jpeglib_version_source_file}" "${_jpeglib_version_source}")
-    SET(_jpeglib_version_include_dirs "-DINCLUDE_DIRECTORIES:STRING=${JPEG_INCLUDE_DIR}")
+IF(ENABLE_DNG)
+    # JPEG library check
+    
+    FIND_PACKAGE(JPEG)
+    IF(JPEG_FOUND)
+        # check version of libjpeg
+        # inspired from digikam/CMakeLists.txt
+        SET(_jpeglib_version_source "#include <stddef.h>\n#include<stdio.h>\n#include <jpeglib.h>\n int main()\n {\n #if (JPEG_LIB_VERSION >= 80) \n #error JPEG_LIB_VERSION >= 80 found \n #endif \n }\n")
+        SET(_jpeglib_version_source_file ${CMAKE_BINARY_DIR}/CMakeTmp/cmake_jpeglib_version_check.cpp)
+        FILE(WRITE "${_jpeglib_version_source_file}" "${_jpeglib_version_source}")
+        SET(_jpeglib_version_include_dirs "-DINCLUDE_DIRECTORIES:STRING=${JPEG_INCLUDE_DIR}")
 
-    TRY_COMPILE(_jpeglib_version_compile_result ${CMAKE_BINARY_DIR} ${_jpeglib_version_source_file}
-                CMAKE_FLAGS "${_jpeglib_version_include_dirs}"
-               )
-    IF(_jpeglib_version_compile_result)
-        MESSAGE(STATUS "Identified libjpeg version less than 80 (too low)")
-        SET(JPEG_FOUND FALSE)
+        TRY_COMPILE(_jpeglib_version_compile_result ${CMAKE_BINARY_DIR} ${_jpeglib_version_source_file}
+                    CMAKE_FLAGS "${_jpeglib_version_include_dirs}"
+                   )
+        IF(_jpeglib_version_compile_result)
+            MESSAGE(STATUS "Identified libjpeg version less than 80 (too low)")
+            SET(JPEG_FOUND FALSE)
+        ENDIF()
     ENDIF()
-ENDIF()
-
-MACRO_LOG_FEATURE(JPEG_FOUND "libjpeg" "JPEG image format support" "http://www.ijg.org" FALSE "80" "needed for the LibRaw DNG lossy codec")
-
-# Flag to use libjpeg with LibRaw DNG lossy codec
-IF(JPEG_FOUND)
-    ADD_DEFINITIONS(-DUSE_JPEG)
-    ADD_DEFINITIONS(-DUSE_JPEG8)
-    INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
+    
+    MACRO_LOG_FEATURE(JPEG_FOUND "libjpeg" "JPEG image format support" "http://www.ijg.org" FALSE "80" "needed for the LibRaw DNG lossy codec")
+    
+    IF(JPEG_FOUND)
+        ADD_DEFINITIONS(-DUSE_JPEG)
+        ADD_DEFINITIONS(-DUSE_JPEG8)
+        INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
+    ENDIF()
 ENDIF()
 
 # For registration to libraw_config.h
@@ -408,7 +411,7 @@ ELSE()
     MESSAGE(STATUS " Libraw will be compiled with RedCine codec support ........... NO")
 ENDIF()
 
-IF(JPEG_FOUND)
+IF(ENABLE_DNG AND JPEG_FOUND)
     MESSAGE(STATUS " Libraw will be compiled with DNG lossy codec support ......... YES")
 ELSE()
     MESSAGE(STATUS " Libraw will be compiled with DNG lossy codec support ......... NO")
